@@ -1,0 +1,7 @@
+checkpoints/
+results/**/train_full.log
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.eggs/
