@@ -23,6 +23,7 @@ class Pems04PklDataset(Dataset):
         output_len: int,
         mode: Union[BasicTSMode, str],
         data_dir: str | None = None,
+        forward_features: list[int] | None = None,
         **_,
     ) -> None:
         super().__init__()
@@ -30,6 +31,7 @@ class Pems04PklDataset(Dataset):
         self.input_len = input_len
         self.output_len = output_len
         self.mode = str(mode).lower()
+        self.forward_features = forward_features or [0, 1, 2]
         if self.mode not in {"train", "val", "valid", "test"}:
             raise ValueError(f"Unsupported mode: {mode}")
         if self.mode == "valid":
@@ -68,9 +70,10 @@ class Pems04PklDataset(Dataset):
 
     def __getitem__(self, index: int) -> dict:
         t0, t1, t2 = self._index[index]
-        history = self._data[t0:t1]
-        future = self._data[t1:t2]
+        history = self._data[t0:t1][..., self.forward_features]
+        future = self._data[t1:t2][..., self.forward_features]
         return {
             "inputs": history.clone(),
             "targets": future[..., :1].clone(),
+            "future_inputs": future.clone(),
         }
