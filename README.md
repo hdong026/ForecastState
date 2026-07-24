@@ -1,73 +1,56 @@
-# ForecastSpace
+# HyperD
+A pytorch implementation for the paper: "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting".
 
-Clean migration of **G1_final_adaptive** from KASA-ST onto **BasicTS 1.1.0**.
+![image](figures/figure1.png)
 
-## Layout
+## Getting Started
 
-- `forecast_space/models/g1/` — standalone G1 model (no vendored basicts)
-- `configs/g1/` — BasicTS 1.1.0 training config
-- `datasets/PEMS04` — symlink to KASA-ST pkl data (sample-based 6:2:2 split)
-- `scripts/` — smoke test, training entry, optional data conversion
+### Environment Requirements
 
-## Environment
+The code is built based on Python 3.12.7, PyTorch 2.5.1, and [EasyTorch](https://github.com/cnstark/easytorch).
 
-Use the `basicts` conda env (BasicTS **1.1.0** from site-packages):
+We implement our code based on [BasicTS](https://github.com/zezhishao/BasicTS/tree/master).
 
-```bash
-conda activate basicts
-cd /home/dhz/ForecastSpace
-```
-
-## Smoke test
+Dependency can be installed using the following command:
 
 ```bash
-python scripts/smoke_test_g1.py
+pip install -r requirements.txt
 ```
 
-## 1-epoch integration check
+### Download Data
+You can download data from [BasicTS](https://github.com/GestaltCogTeam/BasicTS/blob/master/docs/dataset_design.md) and unzip it
+into the `datasets` directory.
+
+We use four datasets: `PEMS03`, `PEMS04`, `PEMS07`, and `PEMS08`.  
+Each dataset directory should contain the following three files:
+- `data.dat`: time series data
+- `adj_mx.pkl`: adjacency matrix
+- `desc.json`: dataset description and metadata
+
+### Statistical Prior Initialization
+Run `Initialization.py` to generate the initialization matrices for learnable daily and weekly embeddings. The results 
+will be automatically saved in the `datasets/{dataset_name}` directory.
+
+For example:
+```bash
+python Initialization.py -d PEMS08
+```
+
+Two `.npy` files will be generated:
+- `daily_init.npy`
+- `weekly_init.npy`
+
+These files will be automatically loaded during model training.
+
+## Run
+To train the model, run:
 
 ```bash
-python scripts/run_g1_pems04.py --gpus 0 --epochs 1
+python train.py --cfg='baselines/HyperD/PEMS03.py'
+python train.py --cfg='baselines/HyperD/PEMS04.py'
+python train.py --cfg='baselines/HyperD/PEMS07.py'
+python train.py --cfg='baselines/HyperD/PEMS08.py'
 ```
 
-## Full training (PEMS04 12→12)
-
-```bash
-python scripts/run_g1_pems04.py --gpus 0
-```
-
-Equivalent BasicTS launcher API:
-
-```bash
-python -c "
-from basicts.launcher import BasicTSLauncher
-from configs.g1.G1_final_adaptive_PEMS04_12to12 import build_config
-cfg = build_config()
-cfg.gpus = '0'; cfg.gpu_num = 1
-BasicTSLauncher.launch_training(cfg)
-"
-```
-
-## Data protocol
-
-Default training uses **KASA pkl protocol** via `Pems04PklDataset` to match old results (~18.12 MAE).
-
-Optional conversion to BasicTS `{train,val,test}_data.npy` windows:
-
-```bash
-python scripts/convert_pems04_to_latest_basicts.py
-```
-
-Output: `datasets/PEMS04_latest/` (does not overwrite symlinked source).
-
-## G1 settings
-
-- input/output: 12 / 12
-- chain_lengths: [3, 6, 12]
-- use_prev_condition: True
-- spatial_placement: final
-- post_spatial_mode: adaptive_only
-
-## Reference (KASA-ST)
-
-G1_final_adaptive PEMS04 12→12 test MAE ≈ **18.12** (best-val checkpoint).
+## Main Results
+![image](figures/figure2.png)

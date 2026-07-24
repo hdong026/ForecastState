@@ -1,2 +1,0 @@
-dataset,model,input_len,output_len,chain_lengths,best_val_mae,test_mae_best_val,test_rmse,test_mape,best_epoch,epoch_time_sec,config_path,log_path
-PEMS04,G1_final_adaptive,12,12,"[3,6,12]",19.2035,19.0327,30.9440,0.1305,99,27.0,configs/g1/G1_final_adaptive_PEMS04_12to12.py,results/g1_final_adaptive_pems04_12to12/train_full.log
