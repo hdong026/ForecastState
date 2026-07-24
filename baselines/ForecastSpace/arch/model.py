@@ -6,7 +6,7 @@ from .forecast_state_chain import ForecastStateChain
 
 
 class ForecastSpace(nn.Module):
-    """G1_final_adaptive ForecastSpace variant integrated under baselines/HyperD/."""
+    """G1_final_adaptive ForecastSpace variant."""
 
     def __init__(self, **model_args):
         super().__init__()

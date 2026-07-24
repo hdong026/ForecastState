@@ -4,7 +4,7 @@ import torch
 
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 
-from .arch.forecast_space_loss import compute_legacy_chain_loss
+from .arch.chain_loss import compute_legacy_chain_loss
 
 
 class ForecastSpaceRunner(SimpleTimeSeriesForecastingRunner):

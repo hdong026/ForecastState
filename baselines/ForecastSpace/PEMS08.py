@@ -11,9 +11,9 @@ from basicts.scaler import ZScoreScaler
 from basicts.utils import get_regular_settings, load_dataset_desc
 
 from .arch import ForecastSpace
-from .forecast_space_runner import ForecastSpaceRunner
+from .runner import ForecastSpaceRunner
 
-DATA_NAME = 'PEMS07'
+DATA_NAME = 'PEMS08'
 regular_settings = get_regular_settings(DATA_NAME)
 INPUT_LEN = regular_settings['INPUT_LEN']
 OUTPUT_LEN = regular_settings['OUTPUT_LEN']
@@ -24,7 +24,7 @@ NULL_VAL = regular_settings['NULL_VAL']
 
 MODEL_ARCH = ForecastSpace
 MODEL_PARAM = {
-    "node_size": 883,
+    "node_size": 170,
     "input_len": INPUT_LEN,
     "output_len": OUTPUT_LEN,
     "input_dim": 3,
@@ -72,7 +72,7 @@ MODEL_PARAM = {
 NUM_EPOCHS = 100
 
 CFG = EasyDict()
-CFG.DESCRIPTION = 'ForecastSpace G1_final_adaptive on PEMS07 12->12'
+CFG.DESCRIPTION = 'ForecastSpace G1_final_adaptive on PEMS08 12->12'
 CFG.GPU_NUM = 1
 CFG.RUNNER = ForecastSpaceRunner
 CFG.ENV = EasyDict()

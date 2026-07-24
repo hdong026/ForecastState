@@ -11,10 +11,9 @@ from basicts.scaler import ZScoreScaler
 from basicts.utils import get_regular_settings, load_dataset_desc
 
 from .arch import ForecastSpace
-from .forecast_space_runner import ForecastSpaceRunner
+from .runner import ForecastSpaceRunner
 
-############################## Hot Parameters ##############################
-DATA_NAME = 'PEMS04'
+DATA_NAME = 'PEMS07'
 regular_settings = get_regular_settings(DATA_NAME)
 INPUT_LEN = regular_settings['INPUT_LEN']
 OUTPUT_LEN = regular_settings['OUTPUT_LEN']
@@ -25,7 +24,7 @@ NULL_VAL = regular_settings['NULL_VAL']
 
 MODEL_ARCH = ForecastSpace
 MODEL_PARAM = {
-    "node_size": 307,
+    "node_size": 883,
     "input_len": INPUT_LEN,
     "output_len": OUTPUT_LEN,
     "input_dim": 3,
@@ -72,17 +71,12 @@ MODEL_PARAM = {
 }
 NUM_EPOCHS = 100
 
-############################## General Configuration ##############################
 CFG = EasyDict()
-CFG.DESCRIPTION = 'ForecastSpace G1_final_adaptive on PEMS04 12->12'
+CFG.DESCRIPTION = 'ForecastSpace G1_final_adaptive on PEMS07 12->12'
 CFG.GPU_NUM = 1
 CFG.RUNNER = ForecastSpaceRunner
-
-############################## Environment Configuration ##############################
 CFG.ENV = EasyDict()
 CFG.ENV.SEED = 1
-
-############################## Dataset Configuration ##############################
 CFG.DATASET = EasyDict()
 CFG.DATASET.NAME = DATA_NAME
 CFG.DATASET.TYPE = TimeSeriesForecastingDataset
@@ -92,8 +86,6 @@ CFG.DATASET.PARAM = EasyDict({
     'input_len': INPUT_LEN,
     'output_len': OUTPUT_LEN,
 })
-
-############################## Scaler Configuration ##############################
 CFG.SCALER = EasyDict()
 CFG.SCALER.TYPE = ZScoreScaler
 CFG.SCALER.PARAM = EasyDict({
@@ -102,39 +94,23 @@ CFG.SCALER.PARAM = EasyDict({
     'norm_each_channel': NORM_EACH_CHANNEL,
     'rescale': RESCALE,
 })
-
-############################## Model Configuration ##############################
 CFG.MODEL = EasyDict()
 CFG.MODEL.NAME = MODEL_ARCH.__name__
 CFG.MODEL.ARCH = MODEL_ARCH
 CFG.MODEL.PARAM = MODEL_PARAM
 CFG.MODEL.FORWARD_FEATURES = [0, 1, 2]
 CFG.MODEL.TARGET_FEATURES = [0]
-
-############################## Metrics Configuration ##############################
 CFG.METRICS = EasyDict()
-CFG.METRICS.FUNCS = EasyDict({
-    'MAE': masked_mae,
-    'RMSE': masked_rmse,
-    'MAPE': masked_mape,
-})
+CFG.METRICS.FUNCS = EasyDict({'MAE': masked_mae, 'RMSE': masked_rmse, 'MAPE': masked_mape})
 CFG.METRICS.TARGET = 'MAE'
 CFG.METRICS.NULL_VAL = NULL_VAL
-
-############################## Training Configuration ##############################
 CFG.TRAIN = EasyDict()
 CFG.TRAIN.NUM_EPOCHS = NUM_EPOCHS
-CFG.TRAIN.CKPT_SAVE_DIR = os.path.join(
-    'results',
-    'ForecastSpace',
-    DATA_NAME,
-)
+CFG.TRAIN.CKPT_SAVE_DIR = os.path.join('results', 'ForecastSpace', DATA_NAME)
 CFG.TRAIN.LOSS = masked_mae
 CFG.TRAIN.OPTIM = EasyDict()
 CFG.TRAIN.OPTIM.TYPE = "Adam"
-CFG.TRAIN.OPTIM.PARAM = {
-    "lr": 0.005,
-}
+CFG.TRAIN.OPTIM.PARAM = {"lr": 0.005}
 CFG.TRAIN.LR_SCHEDULER = EasyDict()
 desc = load_dataset_desc(DATA_NAME)
 train_steps = math.ceil(desc["num_time_steps"] * TRAIN_VAL_TEST_RATIO[0])
@@ -145,26 +121,18 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {
     "steps_per_epoch": train_steps,
     "max_lr": CFG.TRAIN.OPTIM.PARAM["lr"],
 }
-CFG.TRAIN.CLIP_GRAD_PARAM = {
-    'max_norm': 5.0,
-}
+CFG.TRAIN.CLIP_GRAD_PARAM = {'max_norm': 5.0}
 CFG.TRAIN.DATA = EasyDict()
 CFG.TRAIN.DATA.BATCH_SIZE = 64
 CFG.TRAIN.DATA.SHUFFLE = True
-
-############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
 CFG.VAL.DATA.BATCH_SIZE = 64
-
-############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 1
 CFG.TEST.DATA = EasyDict()
 CFG.TEST.DATA.BATCH_SIZE = 64
-
-############################## Evaluation Configuration ##############################
 CFG.EVAL = EasyDict()
 CFG.EVAL.HORIZONS = [3, 6, 12]
 CFG.EVAL.USE_GPU = True

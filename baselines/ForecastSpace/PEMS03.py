@@ -11,7 +11,7 @@ from basicts.scaler import ZScoreScaler
 from basicts.utils import get_regular_settings, load_dataset_desc
 
 from .arch import ForecastSpace
-from .forecast_space_runner import ForecastSpaceRunner
+from .runner import ForecastSpaceRunner
 
 DATA_NAME = 'PEMS03'
 regular_settings = get_regular_settings(DATA_NAME)
