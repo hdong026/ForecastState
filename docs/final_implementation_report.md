@@ -187,7 +187,17 @@ python scripts/run_pems04_comparison.py --models HyperD ForecastStateGraphResolu
 
 ## 13. Commit hash
 
-将在本报告提交后由 `git rev-parse HEAD` 填入。训练中请记录实际 commit。
+**HEAD:** `c6989c792930f786f76c87519f96699cd5ad41f7`  
+**Branch:** `full-forecast-state-graph-resolution`
+
+Staged commits:
+1. `4651715` audit current implementation
+2. `781b79a` add resolution projection and lifting
+3. `65ef4f0` add capacity constrained graph resolution
+4. `c40d4d4` add forecast state refinement
+5. `9906f4b` add final primary gradient projection
+6. `74eb41c` add diagnostics and tests
+7. `c6989c7` add PEMS04 configs and experiment automation
 
 ---
 
