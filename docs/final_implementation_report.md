@@ -187,7 +187,7 @@ python scripts/run_pems04_comparison.py --models HyperD ForecastStateGraphResolu
 
 ## 13. Commit hash
 
-**HEAD:** `c6989c792930f786f76c87519f96699cd5ad41f7`  
+**HEAD:** `530444e3` (see `git rev-parse HEAD`; tip includes report hash update)  
 **Branch:** `full-forecast-state-graph-resolution`
 
 Staged commits:
